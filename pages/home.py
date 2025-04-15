@@ -126,16 +126,73 @@ layout = html.Div(
                                         html.Div("Provider 1"),
                                         dbc.Row(
                                             [
-                                                dbc.Col(
+                                                dbc.Col(  # progress bar
                                                     dbc.Progress(
                                                         value=40,
                                                         striped=True,
                                                         animated=True,
                                                         label="40%",
                                                     ),
-                                                    width=9,
+                                                    width=6,
                                                 ),
-                                                dbc.Col(
+                                                dbc.Col(  # sparkline
+                                                    dcc.Graph(
+                                                        figure={
+                                                            "data": [
+                                                                {
+                                                                    "y": [
+                                                                        80,
+                                                                        90,
+                                                                        100,
+                                                                        110,
+                                                                        105,
+                                                                        120,
+                                                                    ],  # mock trend data
+                                                                    "type": (
+                                                                        "line"
+                                                                    ),
+                                                                    "mode": (
+                                                                        "lines"
+                                                                    ),
+                                                                    "line": {
+                                                                        "width": (
+                                                                            1
+                                                                        )
+                                                                    },
+                                                                }
+                                                            ],
+                                                            "layout": {
+                                                                "margin": {
+                                                                    "l": 0,
+                                                                    "r": 0,
+                                                                    "t": 0,
+                                                                    "b": 0,
+                                                                },
+                                                                "xaxis": {
+                                                                    "visible": (
+                                                                        False
+                                                                    )
+                                                                },
+                                                                "yaxis": {
+                                                                    "visible": (
+                                                                        False
+                                                                    )
+                                                                },
+                                                                "height": 30,
+                                                            },
+                                                        },
+                                                        config={
+                                                            "displayModeBar": (
+                                                                False
+                                                            )
+                                                        },
+                                                        style={
+                                                            "height": "30px"
+                                                        },
+                                                    ),
+                                                    width=3,
+                                                ),
+                                                dbc.Col(  # current rate text
                                                     html.Div(
                                                         "120 rec/hr",
                                                         style={
@@ -159,7 +216,64 @@ layout = html.Div(
                                                         animated=True,
                                                         label="70%",
                                                     ),
-                                                    width=9,
+                                                    width=6,
+                                                ),
+                                                dbc.Col(
+                                                    dcc.Graph(
+                                                        figure={
+                                                            "data": [
+                                                                {
+                                                                    "y": [
+                                                                        180,
+                                                                        190,
+                                                                        200,
+                                                                        210,
+                                                                        205,
+                                                                        220,
+                                                                    ],
+                                                                    "type": (
+                                                                        "line"
+                                                                    ),
+                                                                    "mode": (
+                                                                        "lines"
+                                                                    ),
+                                                                    "line": {
+                                                                        "width": (
+                                                                            1
+                                                                        )
+                                                                    },
+                                                                }
+                                                            ],
+                                                            "layout": {
+                                                                "margin": {
+                                                                    "l": 0,
+                                                                    "r": 0,
+                                                                    "t": 0,
+                                                                    "b": 0,
+                                                                },
+                                                                "xaxis": {
+                                                                    "visible": (
+                                                                        False
+                                                                    )
+                                                                },
+                                                                "yaxis": {
+                                                                    "visible": (
+                                                                        False
+                                                                    )
+                                                                },
+                                                                "height": 30,
+                                                            },
+                                                        },
+                                                        config={
+                                                            "displayModeBar": (
+                                                                False
+                                                            )
+                                                        },
+                                                        style={
+                                                            "height": "30px"
+                                                        },
+                                                    ),
+                                                    width=3,
                                                 ),
                                                 dbc.Col(
                                                     html.Div(
@@ -185,7 +299,64 @@ layout = html.Div(
                                                         animated=True,
                                                         label="20%",
                                                     ),
-                                                    width=9,
+                                                    width=6,
+                                                ),
+                                                dbc.Col(
+                                                    dcc.Graph(
+                                                        figure={
+                                                            "data": [
+                                                                {
+                                                                    "y": [
+                                                                        60,
+                                                                        70,
+                                                                        75,
+                                                                        80,
+                                                                        78,
+                                                                        85,
+                                                                    ],
+                                                                    "type": (
+                                                                        "line"
+                                                                    ),
+                                                                    "mode": (
+                                                                        "lines"
+                                                                    ),
+                                                                    "line": {
+                                                                        "width": (
+                                                                            1
+                                                                        )
+                                                                    },
+                                                                }
+                                                            ],
+                                                            "layout": {
+                                                                "margin": {
+                                                                    "l": 0,
+                                                                    "r": 0,
+                                                                    "t": 0,
+                                                                    "b": 0,
+                                                                },
+                                                                "xaxis": {
+                                                                    "visible": (
+                                                                        False
+                                                                    )
+                                                                },
+                                                                "yaxis": {
+                                                                    "visible": (
+                                                                        False
+                                                                    )
+                                                                },
+                                                                "height": 30,
+                                                            },
+                                                        },
+                                                        config={
+                                                            "displayModeBar": (
+                                                                False
+                                                            )
+                                                        },
+                                                        style={
+                                                            "height": "30px"
+                                                        },
+                                                    ),
+                                                    width=3,
                                                 ),
                                                 dbc.Col(
                                                     html.Div(
@@ -211,7 +382,64 @@ layout = html.Div(
                                                         animated=True,
                                                         label="100%",
                                                     ),
-                                                    width=9,
+                                                    width=6,
+                                                ),
+                                                dbc.Col(
+                                                    dcc.Graph(
+                                                        figure={
+                                                            "data": [
+                                                                {
+                                                                    "y": [
+                                                                        250,
+                                                                        270,
+                                                                        280,
+                                                                        290,
+                                                                        295,
+                                                                        300,
+                                                                    ],
+                                                                    "type": (
+                                                                        "line"
+                                                                    ),
+                                                                    "mode": (
+                                                                        "lines"
+                                                                    ),
+                                                                    "line": {
+                                                                        "width": (
+                                                                            1
+                                                                        )
+                                                                    },
+                                                                }
+                                                            ],
+                                                            "layout": {
+                                                                "margin": {
+                                                                    "l": 0,
+                                                                    "r": 0,
+                                                                    "t": 0,
+                                                                    "b": 0,
+                                                                },
+                                                                "xaxis": {
+                                                                    "visible": (
+                                                                        False
+                                                                    )
+                                                                },
+                                                                "yaxis": {
+                                                                    "visible": (
+                                                                        False
+                                                                    )
+                                                                },
+                                                                "height": 30,
+                                                            },
+                                                        },
+                                                        config={
+                                                            "displayModeBar": (
+                                                                False
+                                                            )
+                                                        },
+                                                        style={
+                                                            "height": "30px"
+                                                        },
+                                                    ),
+                                                    width=3,
                                                 ),
                                                 dbc.Col(
                                                     html.Div(
@@ -244,7 +472,7 @@ layout = html.Div(
                             "box-shadow": "0 0 5px rgba(0,0,0,0.1)",
                         },
                     ),
-                    lg=4,
+                    lg=5,
                     className="ml-3 mt-0",
                 ),
                 # Right Main Content Column
