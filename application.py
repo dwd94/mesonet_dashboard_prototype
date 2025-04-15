@@ -49,7 +49,12 @@ def create_app():
         # prevent_initial_callbacks="initial_duplicate",
         # suppress_callback_exceptions=True,
         use_pages=True,
-        meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
+        meta_tags=[
+            {
+                "name": "viewport",
+                "content": "width=device-width, initial-scale=1",
+            }
+        ],
         external_stylesheets=[
             dbc.themes.BOOTSTRAP,
             dbc.icons.BOOTSTRAP,

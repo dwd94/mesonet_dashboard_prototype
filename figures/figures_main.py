@@ -8,9 +8,9 @@ import shapely.geometry
 import numpy as np
 import json
 
+
 def map():
-    """
-    """
+    """ """
     fig = go.Figure()
 
     fig.add_trace(
@@ -24,9 +24,6 @@ def map():
     )
     fig.update_layout(
         margin=dict(l=5, r=0, t=10, b=5),
-        map_bounds={"west": -130, "east": -63.5, "south": 24.0, "north": 53.0}
+        map_bounds={"west": -130, "east": -63.5, "south": 24.0, "north": 53.0},
     )
     return fig
-                                    
-    
-                          
