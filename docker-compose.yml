@@ -1,0 +1,6 @@
+services:
+  mesoapp:
+    # env_file: ".env"
+    build: .
+    ports:
+      - "10000:10000"

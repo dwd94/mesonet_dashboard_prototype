@@ -1,0 +1,31 @@
+name: meso_env
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - dash
+  - dash-bootstrap-components
+  - dash-ag-grid
+  - flask
+  - gunicorn
+  - plotly
+  - numpy
+  - pandas
+  - xarray
+  - h5netcdf
+  - dask
+  - geopandas
+  - rasterio
+  - shapely
+  - pyproj
+  - scipy
+  - boto3
+  - requests
+  - flask-caching
+  - ipykernel
+  - dash-leaflet
+  - waitress
+  - pip:
+    - python-dotenv
