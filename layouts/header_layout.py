@@ -6,7 +6,7 @@ header_layout = dbc.Navbar(
     dbc.Container(
         [
             html.A(
-                dbc.NavbarBrand("Mesonet Protoype", className="ms-3"),
+                dbc.NavbarBrand("Mesonet Prototype", className="ms-3"),
                 href="/",  # Link to home
                 style={"textDecoration": "none"},  # Remove underline
             ),
