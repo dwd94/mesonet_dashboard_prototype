@@ -20,6 +20,16 @@ header_layout = dbc.Navbar(
                             "About", href="/about", className="nav-link"
                         )
                     ),
+                    dbc.NavItem(
+                        dbc.NavLink(
+                            "Providers", href="/providers", className="nav-link"
+                        )
+                    ),
+                    dbc.NavItem(
+                        dbc.NavLink(
+                            "Category", href="/category", className="nav-link"
+                        )
+                    ),
                 ],
                 className="ms-auto",
                 navbar=True,

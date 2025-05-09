@@ -25,7 +25,7 @@ import dash_bootstrap_components as dbc  # new import for column layout
 
 from figures import figures_main
 
-dash.register_page(__name__, path="/", name="Home")
+dash.register_page(__name__, path="/home", name="Home")
 
 # Load dummy data (when available)
 try:
