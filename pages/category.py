@@ -133,7 +133,8 @@ sidebar = html.Div([
         )
     ], style={"textAlign": "center"}),
     
-    # Removed redundant traffic light component
+    # Add Category heading
+    html.H4("Category", style={"marginBottom": "20px", "textAlign": "center"}),
     
     dbc.Table([
         html.Thead(html.Tr([
@@ -260,23 +261,37 @@ map_div = html.Div([
 
 # Right panel (system stats)
 right_panel = html.Div([
+    # Stats in two rows with proper alignment
     html.Div([
-        html.H6("Ingested", style={"display": "inline-block", "marginRight": "10px"}),
-        html.Span(f"{total_actual:,}", style={"fontWeight": "bold"}),
-        html.H6("Exported", style={"display": "inline-block", "marginLeft": "30px", "marginRight": "10px"}),
-        html.Span(f"{total_actual:,}", style={"fontWeight": "bold"}),
-    ], style={"marginBottom": "10px"}),
-    dbc.Progress(
-        value=100,
-        color="success",
-        style={"height": "15px", "marginBottom": "10px"},
-        children="100.00%"
-    ),
-    html.Div([
-        html.Span("Latency:", style={"marginRight": "10px"}),
-        html.Span(f"{latency} Seconds", style={"fontWeight": "bold"})
-    ])
-], style={"flex": "1 1 220px", "display": "flex", "flexDirection": "column", "padding": "10px", "minWidth": "180px", "height": "100%"})
+        dbc.Row([
+            dbc.Col([
+                html.H6("Ingested", className="mb-0", style={"fontSize": "0.9rem", "color": "#777"}),
+                html.Div(f"{total_actual:,}", style={"fontWeight": "bold", "fontSize": "1.2rem"})
+            ], width=6),
+            dbc.Col([
+                html.H6("Exported", className="mb-0", style={"fontSize": "0.9rem", "color": "#777"}),
+                html.Div(f"{total_actual:,}", style={"fontWeight": "bold", "fontSize": "1.2rem"})
+            ], width=6),
+        ], className="mb-3"),
+        
+        html.Div([
+            html.H6("Ingestion Progress", className="mb-1", style={"fontSize": "0.9rem", "color": "#777"}),
+            dbc.Progress(
+                value=90,  # Changed to 90% filled
+                color="success",  # Changed to green
+                style={"height": "15px", "marginBottom": "10px"},
+                className="mb-2"
+            ),
+        ]),
+        
+        dbc.Row([
+            dbc.Col([
+                html.H6("Latency", className="mb-0", style={"fontSize": "0.9rem", "color": "#777"}),
+                html.Div(f"{latency} Seconds", style={"fontWeight": "bold", "fontSize": "1.2rem"})
+            ], width=12),
+        ])
+    ], style={"backgroundColor": "#fff", "padding": "15px", "borderRadius": "5px", "boxShadow": "0 2px 4px rgba(0,0,0,0.05)"})
+], style={"width": "28%", "display": "inline-block", "verticalAlign": "top", "padding": "10px", "height": "100%"})
 
 # Layout
 layout = html.Div([
@@ -284,12 +299,5 @@ layout = html.Div([
         sidebar,
         map_div,
         right_panel
-    ], style={
-        "display": "flex",
-        "justifyContent": "flex-start",
-        "alignItems": "stretch",
-        "gap": "10px",
-        "height": "calc(100vh - 20px)",
-        "width": "100%"
-    })
+    ], style={"display": "flex", "justifyContent": "flex-start", "alignItems": "flex-start", "gap": "10px", "height": "calc(100vh - 20px)", "width": "100%"})
 ], style={"background": "#fff", "padding": "20px 0 0 0", "height": "100vh", "width": "100vw", "overflow": "hidden"}) 
