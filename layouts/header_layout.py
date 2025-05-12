@@ -22,12 +22,16 @@ header_layout = dbc.Navbar(
                     ),
                     dbc.NavItem(
                         dbc.NavLink(
-                            "Providers", href="/providers", className="nav-link"
+                            html.Span("Providers", style={"fontWeight": "bold"}),
+                            href="/providers",
+                            className="nav-link"
                         )
                     ),
                     dbc.NavItem(
                         dbc.NavLink(
-                            "Category", href="/category", className="nav-link"
+                            html.Span("Category", style={"fontWeight": "bold"}),
+                            href="/category",
+                            className="nav-link"
                         )
                     ),
                 ],

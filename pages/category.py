@@ -8,6 +8,13 @@ import os
 # Register the page
 dash.register_page(__name__, path="/category", name="Category Status")
 
+# Sync with providers color scheme
+status_colors = {
+    "high": "#6cc26c",  # green
+    "medium": "#ffe135", # yellow
+    "low": "#ff9dbf"     # pink (instead of red)
+}
+
 # Dummy data for categories
 categories = [
     {
@@ -58,11 +65,12 @@ categories = [
 for cat in categories:
     cat["percent"] = 100 * cat["actual"] / cat["expected"] if cat["expected"] else 0
     if cat["percent"] >= 98:
-        cat["color"] = "#6cc26c"  # green
+        cat["status"] = "high"
     elif cat["percent"] >= 90:
-        cat["color"] = "#ffe135"  # yellow
+        cat["status"] = "medium"
     else:
-        cat["color"] = "#e74c3c"  # red
+        cat["status"] = "low"
+    cat["color"] = status_colors[cat["status"]]
 
 # Dummy system stats
 total_expected = sum(c["expected"] for c in categories)
@@ -73,48 +81,60 @@ latency = 4.3
 # Traffic light component (vertical, all three lights)
 def traffic_light_component(status):
     colors = {
-        'red':   '#e74c3c',
-        'yellow': '#ffe135',
-        'green': '#6cc26c'
+        'low': status_colors["low"],     # Pink
+        'medium': status_colors["medium"], # Yellow
+        'high': status_colors["high"]      # Green
     }
     active = {
-        'red':   0.3,
-        'yellow': 0.3,
-        'green': 0.3
+        'low': 0.3,
+        'medium': 0.3,
+        'high': 0.3
     }
-    if status == 'green':
-        active['green'] = 1
-    elif status == 'yellow':
-        active['yellow'] = 1
+    if status == 'high':
+        active['high'] = 1
+    elif status == 'medium':
+        active['medium'] = 1
     else:
-        active['red'] = 1
+        active['low'] = 1
     return html.Div([
         html.Div(style={
-            "width": "32px", "height": "32px", "borderRadius": "50%", "backgroundColor": colors['red'],
-            "opacity": active['red'], "margin": "0 auto 6px auto", "border": "2px solid #888"
+            "width": "32px", "height": "32px", "borderRadius": "50%", "backgroundColor": colors['low'],
+            "opacity": active['low'], "margin": "0 auto 6px auto", "border": "2px solid #888"
         }),
         html.Div(style={
-            "width": "32px", "height": "32px", "borderRadius": "50%", "backgroundColor": colors['yellow'],
-            "opacity": active['yellow'], "margin": "0 auto 6px auto", "border": "2px solid #888"
+            "width": "32px", "height": "32px", "borderRadius": "50%", "backgroundColor": colors['medium'],
+            "opacity": active['medium'], "margin": "0 auto 6px auto", "border": "2px solid #888"
         }),
         html.Div(style={
-            "width": "32px", "height": "32px", "borderRadius": "50%", "backgroundColor": colors['green'],
-            "opacity": active['green'], "margin": "0 auto", "border": "2px solid #888"
+            "width": "32px", "height": "32px", "borderRadius": "50%", "backgroundColor": colors['high'],
+            "opacity": active['high'], "margin": "0 auto", "border": "2px solid #888"
         })
     ], style={"display": "flex", "flexDirection": "column", "alignItems": "center", "marginBottom": "18px"})
 
 # Determine traffic light status
 if total_percent >= 98:
-    traffic_status = 'green'
+    traffic_status = 'high'
 elif total_percent >= 90:
-    traffic_status = 'yellow'
+    traffic_status = 'medium'
 else:
-    traffic_status = 'red'
+    traffic_status = 'low'
 
 # Sidebar table with progress bars under each row
 sidebar = html.Div([
-    # Full traffic light at the top
-    traffic_light_component(traffic_status),
+    # Traffic light image above the title
+    html.Div([
+        html.Img(
+            src="assets/traffic-lights.png",  # Fixed filename with 's'
+            style={
+                "height": "80px",
+                "margin": "0 auto 15px auto",
+                "display": "block"
+            }
+        )
+    ], style={"textAlign": "center"}),
+    
+    # Removed redundant traffic light component
+    
     dbc.Table([
         html.Thead(html.Tr([
             html.Th(""),
@@ -129,13 +149,28 @@ sidebar = html.Div([
                 html.Td(f"{total_actual:,}", style={"fontWeight": "bold"}),
                 html.Td(
                     html.Div(
-                        dbc.Progress(
-                            value=total_percent,
-                            color="success" if total_percent >= 98 else ("warning" if total_percent >= 90 else "danger"),
-                            style={"height": "15px", "width": "100%"},
-                            children=f"{total_percent:.2f}%"
-                        ),
-                        style={"display": "flex", "alignItems": "center", "height": "100%", "padding": "2px 0"}
+                        style={"position": "relative"},
+                        children=[
+                            dbc.Progress(
+                                value=total_percent,
+                                color="success" if total_percent >= 98 else ("warning" if total_percent >= 90 else "danger"),
+                                style={"height": "15px", "width": "100%"},
+                            ),
+                            html.Span(
+                                f"{total_percent:.2f}%",
+                                style={
+                                    "position": "absolute",
+                                    "top": "0",
+                                    "left": "0",
+                                    "right": "0",
+                                    "fontSize": "0.75rem",
+                                    "textAlign": "center",
+                                    "color": "black",  # Changed text color to black
+                                    "fontWeight": "bold",
+                                    "lineHeight": "15px"
+                                }
+                            )
+                        ]
                     )
                 )
             ]),
@@ -146,13 +181,28 @@ sidebar = html.Div([
                     html.Td(f"{cat['actual']:,}"),
                     html.Td(
                         html.Div(
-                            dbc.Progress(
-                                value=cat["percent"],
-                                color="success" if cat["percent"] >= 98 else ("warning" if cat["percent"] >= 90 else "danger"),
-                                style={"height": "20px", "width": "100%", "backgroundColor": cat["color"]},
-                                children=f"{cat['percent']:.2f}%"
-                            ),
-                            style={"display": "flex", "alignItems": "center", "height": "100%", "padding": "2px 0"}
+                            style={"position": "relative"},
+                            children=[
+                                dbc.Progress(
+                                    value=cat["percent"],
+                                    color="success" if cat["percent"] >= 98 else ("warning" if cat["percent"] >= 90 else "danger"),
+                                    style={"height": "15px", "width": "100%", "backgroundColor": cat["color"]},
+                                ),
+                                html.Span(
+                                    f"{cat['percent']:.2f}%",
+                                    style={
+                                        "position": "absolute",
+                                        "top": "0",
+                                        "left": "0",
+                                        "right": "0",
+                                        "fontSize": "0.75rem",
+                                        "textAlign": "center",
+                                        "color": "black",  # Changed text color to black
+                                        "fontWeight": "bold",
+                                        "lineHeight": "15px"
+                                    }
+                                )
+                            ]
                         )
                     )
                 ]) for cat in categories

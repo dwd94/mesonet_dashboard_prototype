@@ -73,10 +73,26 @@ for _, row in vendor_df.iterrows():
 
 print(f"Loaded {len(providers)} providers")
 
+# Define consistent status colors to use throughout the application
+status_colors = {
+    "high": "green",    # 100+ stations
+    "medium": "yellow", # 50-99 stations
+    "low": "pink"       # <50 stations
+}
+
 def create_provider_mini_graph(provider_name):
-    # Create dummy data for the mini graph
+    # Create unique dummy data for each provider based on provider name hash
+    provider_hash = hash(provider_name) % 100  # Get a unique number from provider name
     dates = pd.date_range(end=datetime.datetime.now(), periods=24, freq='h')
-    values = [20 + 5 * np.sin(i/3) for i in range(24)]
+    
+    # Create unique patterns for each provider using the hash
+    base = 15 + (provider_hash % 10)
+    amplitude = 3 + (provider_hash % 5)
+    frequency = 0.2 + (provider_hash % 10) / 30
+    phase = provider_hash % 6
+    
+    # Generate unique wave pattern
+    values = [base + amplitude * np.sin(frequency * i + phase) for i in range(24)]
     df = pd.DataFrame({'timestamp': dates, 'value': values})
     
     provider_color = next((p["color"] for p in providers if p["name"] == provider_name), '#1f77b4')
@@ -92,12 +108,12 @@ def create_provider_mini_graph(provider_name):
     
     fig.update_layout(
         margin=dict(l=0, r=0, t=0, b=0),
-        height=30,  # Reduced height
-        width=100,  # Added width
+        height=40,  # Slightly increased height
         paper_bgcolor='rgba(0,0,0,0)',
         plot_bgcolor='rgba(0,0,0,0)',
         xaxis=dict(showticklabels=False),
-        yaxis=dict(showticklabels=False)
+        yaxis=dict(showticklabels=False),
+        autosize=True
     )
     
     return fig
@@ -108,43 +124,73 @@ def create_provider_card(provider):
     progress = (provider['station_count'] / max_stations) * 100 if max_stations > 0 else 10
     if progress == 0.0:
         progress = 5
+    
+    # Determine provider status based on station count
     station_count = provider['station_count']
     if station_count >= 100:
-        marker_color = 'green'
-        traffic_light = "🟢"
+        status = "high"
     elif station_count >= 50:
-        marker_color = 'yellow'
-        traffic_light = "🟡"
+        status = "medium"
     else:
-        marker_color = 'pink'
-        traffic_light = "🔴"
+        status = "low"
+        
+    marker_color = status_colors[status]
+    
     return dbc.Card(
         dbc.CardBody([
             dbc.Row([
                 # Provider Name and Traffic Signal
                 dbc.Col(html.H6(provider["name"], style={"marginBottom": "5px"}), width=10),
-                dbc.Col(html.Div(traffic_light, style={"fontSize": "1.2rem", "textAlign": "right"}), width=2),
+                dbc.Col(
+                    html.Div(
+                        html.Span(
+                            "●",  # Using a circle character that we can color
+                            style={
+                                "fontSize": "1.5rem", 
+                                "color": marker_color,  # Use the same color as the marker
+                                "textAlign": "right"
+                            }
+                        ),
+                        style={"textAlign": "right"}
+                    ), 
+                    width=2
+                ),
             ]),
             dbc.Row([
                 # Progress Bar with percentage text
                 dbc.Col([
                     html.Div([
-                        dbc.Progress(
-                            value=progress,
-                            color=marker_color,
-                            style={"height": "10px", "marginBottom": "5px", "width": "100%"}
-                        ),
-                        html.Span(
-                            f"{progress:.1f}%", 
-                            style={"fontSize": "0.8rem", "display": "block", "textAlign": "right"}
+                        html.Div(
+                            style={"position": "relative"},
+                            children=[
+                                dbc.Progress(
+                                    value=progress,
+                                    color=marker_color,
+                                    style={"height": "15px", "marginBottom": "10px", "width": "100%"}
+                                ),
+                                html.Span(
+                                    f"{progress:.1f}%", 
+                                    style={
+                                        "position": "absolute",
+                                        "top": "0",
+                                        "left": "0",
+                                        "right": "0",
+                                        "fontSize": "0.75rem",
+                                        "textAlign": "center",
+                                        "color": "black",  # Changed text color to black
+                                        "fontWeight": "bold",
+                                        "lineHeight": "15px"
+                                    }
+                                )
+                            ]
                         ),
                     ]),
-                    # Line Graph in same column
+                    # Line Graph in same column - FULL WIDTH
                     html.Div([
                         dcc.Graph(
                             figure=create_provider_mini_graph(provider["name"]),
                             config={"displayModeBar": False},
-                            style={"height": "30px", "width": "100%", "marginTop": "5px"}
+                            style={"height": "40px", "width": "100%", "marginTop": "5px"}
                         ),
                         html.Div(
                             f"{provider['frequency']:.1f}/h",
@@ -159,7 +205,7 @@ def create_provider_card(provider):
 
 # Layout
 layout = html.Div([
-    # Left sidebar toggle button
+    # Left sidebar toggle button - fixed positioning updated to be above the sidebar content
     html.Div([
         dbc.Button(
             html.I(className="fas fa-chevron-left", id="sidebar-icon"),
@@ -169,8 +215,8 @@ layout = html.Div([
             style={
                 "position": "fixed", 
                 "top": "95px", 
-                "left": "10px", 
-                "zIndex": "1000",
+                "left": "20px", 
+                "zIndex": "1100",  # Increased z-index to ensure it's above other elements
                 "borderRadius": "0 4px 4px 0",
                 "paddingLeft": "8px",
                 "paddingRight": "8px",
@@ -190,7 +236,7 @@ layout = html.Div([
                 "position": "fixed", 
                 "top": "95px", 
                 "right": "10px", 
-                "zIndex": "1000",
+                "zIndex": "1100",  # Increased z-index
                 "borderRadius": "4px 0 0 4px",
                 "paddingLeft": "8px",
                 "paddingRight": "8px",
@@ -204,12 +250,25 @@ layout = html.Div([
         dbc.Col([
             html.Div([
                 html.Div([
-                    html.H4("Providers", style={"marginBottom": "20px"}),
+                    # Traffic light image above providers title
+                    html.Div([
+                        html.Img(
+                            src="assets/traffic-lights.png",  # Fixed filename with 's'
+                            style={
+                                "height": "80px",
+                                "margin": "0 auto 15px auto",
+                                "display": "block"
+                            }
+                        )
+                    ], style={"textAlign": "center"}),
+                    
+                    html.H4("Providers", style={"marginBottom": "20px", "textAlign": "center"}),
                     html.Div([
                         create_provider_card(provider) for provider in providers
                     ])
                 ], style={
                     "padding": "20px",
+                    "paddingLeft": "40px",  # Increased left padding to make room for toggle button
                     "backgroundColor": "#f8f9fa",
                     "borderRadius": "5px",
                     "height": "calc(100vh - 80px)",
@@ -315,11 +374,13 @@ def update_map(_, n_clicks, current_figure):
     for provider in providers:
         station_count = provider['station_count']
         if station_count >= 100:
-            marker_color = 'green'
+            status = "high"
         elif station_count >= 50:
-            marker_color = 'yellow'
+            status = "medium"
         else:
-            marker_color = 'pink'
+            status = "low"
+            
+        marker_color = status_colors[status]
             
         fig.add_trace(go.Scattermapbox(
             lat=[provider["lat"]],
