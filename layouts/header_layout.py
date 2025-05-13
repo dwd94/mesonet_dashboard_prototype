@@ -40,33 +40,19 @@ header_layout = dbc.Navbar(
                         )
                     ),
                 ],
-                className="ms-auto me-4",
+                className="me-4",
                 navbar=True,
-            ),
-            dbc.Row([
-                dbc.Col(
-                    html.Div([
-                        html.I(className="fas fa-moon", style={"color": "white"}),
-                    ], className="p-2 rounded-circle bg-dark bg-opacity-25"),
-                    width="auto",
-                    className="me-2"
-                ),
-                dbc.Col(
-                    html.Div([
-                        html.I(className="fas fa-user", style={"color": "white"}),
-                    ], className="p-2 rounded-circle bg-dark bg-opacity-25"),
-                    width="auto"
-                ),
-            ], className="g-0"),
+            )
         ],
         fluid=True,
+        className="justify-content-start"
     ),
     color="primary",
     dark=True,
     className="mb-4 shadow-sm",
     style={
         "background": "linear-gradient(90deg, #1e3c72 0%, #2a5298 100%)",
-        "borderBottom": "1px solid rgba(255,255,255,0.1)"
+        "borderBottom": "1px solid rgba(255,255,255,0.1)",
     },
 )
 
