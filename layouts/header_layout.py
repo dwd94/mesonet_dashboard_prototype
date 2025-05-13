@@ -1,12 +1,14 @@
 import dash
-from dash import html, dcc
+from dash import html, dcc, callback, Input, Output
 import dash_bootstrap_components as dbc
 
+# dcc.Location(id="url", refresh=False),
 header_layout = dbc.Navbar(
     dbc.Container(
         [
             html.A(
                 dbc.Row([
+                    dcc.Location(id="url", refresh=False),
                     dbc.Col(html.I(className="fas fa-chart-line me-2", style={"fontSize": "24px", "color": "white"})),
                     dbc.Col(dbc.NavbarBrand("Mesonet Dashboard", className="ms-2")),
                 ], align="center", className="g-0"),
@@ -15,34 +17,15 @@ header_layout = dbc.Navbar(
             ),
             dbc.Nav(
                 [
-                    # dbc.NavItem(
-                    #     dbc.NavLink(
-                    #         html.Div([
-                    #             html.I(className="fas fa-home me-1"),
-                    #             "Home"
-                    #         ], style={"display": "flex", "alignItems": "center"}),
-                    #         href="/",
-                    #         className="nav-link"
-                    #     )
-                    # ),
-                    # dbc.NavItem(
-                    #     dbc.NavLink(
-                    #         html.Div([
-                    #             html.I(className="fas fa-info-circle me-1"),
-                    #             "About"
-                    #         ], style={"display": "flex", "alignItems": "center"}),
-                    #         href="/about",
-                    #         className="nav-link"
-                    #     )
-                    # ),
                     dbc.NavItem(
                         dbc.NavLink(
                             html.Div([
                                 html.I(className="fas fa-broadcast-tower me-1"),
                                 html.Span("Providers", style={"fontWeight": "bold"}),
                             ], style={"display": "flex", "alignItems": "center"}),
+                            id="nav-providers",
                             href="/",
-                            className="nav-link active"
+                            className="nav-link"
                         )
                     ),
                     dbc.NavItem(
@@ -51,6 +34,7 @@ header_layout = dbc.Navbar(
                                 html.I(className="fas fa-layer-group me-1"),
                                 html.Span("Category", style={"fontWeight": "bold"}),
                             ], style={"display": "flex", "alignItems": "center"}),
+                            id="nav-category",
                             href="/category",
                             className="nav-link"
                         )
@@ -85,3 +69,13 @@ header_layout = dbc.Navbar(
         "borderBottom": "1px solid rgba(255,255,255,0.1)"
     },
 )
+
+@callback(
+    Output("nav-providers", "className"),
+    Output("nav-category", "className"),
+    Input("url", "pathname")
+)
+def highlight_active_link(pathname):
+    providers_active = "nav-link active" if pathname == "/" else "nav-link"
+    category_active = "nav-link active" if pathname == "/category" else "nav-link"
+    return providers_active, category_active

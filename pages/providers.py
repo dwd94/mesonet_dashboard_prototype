@@ -138,67 +138,81 @@ def create_provider_card(provider):
     
     return dbc.Card(
         dbc.CardBody([
-            dbc.Row([
-                # Provider Name and Traffic Signal
-                dbc.Col(html.H6(provider["name"], style={"marginBottom": "5px"}), width=10),
-                dbc.Col(
-                    html.Div(
-                        html.Span(
-                            "●",  # Using a circle character that we can color
-                            style={
-                                "fontSize": "1.5rem", 
-                                "color": marker_color,  # Use the same color as the marker
-                                "textAlign": "right"
-                            }
-                        ),
-                        style={"textAlign": "right"}
-                    ), 
-                    width=2
-                ),
-            ]),
-            dbc.Row([
-                # Progress Bar with percentage text
-                dbc.Col([
-                    html.Div([
-                        html.Div(
-                            style={"position": "relative"},
-                            children=[
-                                dbc.Progress(
-                                    value=progress,
-                                    color=marker_color,
-                                    style={"height": "15px", "marginBottom": "10px", "width": "100%"}
+            # Row 1: Provider name (left) and frequency (right)
+            dbc.Row(
+                [
+                    dbc.Col(
+                        html.H6(provider["name"], style={"marginBottom": "0"}),
+                        width=6
+                    ),
+                    dbc.Col(
+                        dbc.Row(
+                            [
+                                dbc.Col(
+                                    html.Div(f"{provider['frequency']:.1f}/h", style={
+                                        "fontSize": "0.8rem"
+                                    }),
+                                    width="auto"
                                 ),
-                                html.Span(
-                                    f"{progress:.1f}%", 
-                                    style={
-                                        "position": "absolute",
-                                        "top": "0",
-                                        "left": "0",
-                                        "right": "0",
-                                        "fontSize": "0.75rem",
-                                        "textAlign": "center",
-                                        "color": "black",  # Changed text color to black
-                                        "fontWeight": "bold",
-                                        "lineHeight": "15px"
-                                    }
+                                dbc.Col(
+                                    html.Div(
+                                        html.Span("●", style={
+                                            "fontSize": "1.5rem",
+                                            "color": marker_color,
+                                            "marginLeft": "6px"
+                                        })
+                                    ),
+                                    width="auto"
                                 )
-                            ]
+                            ],
+                            justify="end",
+                            align="center",  
+                            className="g-1"
                         ),
-                    ]),
-                    # Line Graph in same column - FULL WIDTH
-                    html.Div([
-                        dcc.Graph(
-                            figure=create_provider_mini_graph(provider["name"]),
-                            config={"displayModeBar": False},
-                            style={"height": "40px", "width": "100%", "marginTop": "5px"}
-                        ),
-                        html.Div(
-                            f"{provider['frequency']:.1f}/h",
-                            style={"textAlign": "right", "fontSize": "0.8rem", "marginTop": "2px"}
-                        )
-                    ])
-                ], width=12),
-            ]),
+                        width=6
+                    )
+                ],
+                align="center",  
+                className="mb-2"
+),
+
+            # Row 2: Progress bar (left) and graph (right)
+            dbc.Row([
+                dbc.Col([
+                    html.Div(
+                        style={"position": "relative"},
+                        children=[
+                            dbc.Progress(
+                                value=progress,
+                                color=marker_color,
+                                style={"height": "25px", "width": "100%"}
+                            ),
+                            html.Span(
+                                f"{progress:.1f}%",
+                                style={
+                                    "position": "absolute",
+                                    "top": "0",
+                                    "left": "0",
+                                    "right": "0",
+                                    "fontSize": "0.75rem",
+                                    "textAlign": "center",
+                                    "color": "black",
+                                    "fontWeight": "bold",
+                                    "lineHeight": "25px"
+                                }
+                            )
+                        ]
+                    )
+                ], width=6),
+
+                dbc.Col([
+                    dcc.Graph(
+                        figure=create_provider_mini_graph(provider["name"]),
+                        config={"displayModeBar": False},
+                        style={"height": "40px", "width": "100%"}
+                    )
+                ], width=6),
+            ])
         ]),
         style={"marginBottom": "10px", "padding": "10px"}
     )
