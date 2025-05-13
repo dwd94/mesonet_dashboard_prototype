@@ -22,7 +22,7 @@ from dash import (
 )
 import dash_bootstrap_components as dbc
 
-dash.register_page(__name__, path="/providers", name="Providers")
+dash.register_page(__name__, path="/", name="Providers")
 
 # Load provider data from Excel
 excel_path = os.path.join(os.path.dirname(__file__), '../data/dummy_data/Mesonet Vendor Info.xlsx')

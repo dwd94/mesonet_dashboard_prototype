@@ -10,38 +10,38 @@ header_layout = dbc.Navbar(
                     dbc.Col(html.I(className="fas fa-chart-line me-2", style={"fontSize": "24px", "color": "white"})),
                     dbc.Col(dbc.NavbarBrand("Mesonet Dashboard", className="ms-2")),
                 ], align="center", className="g-0"),
-                href="/providers",  # Default to providers page
+                href="/",  # Default to providers page
                 style={"textDecoration": "none"},
             ),
             dbc.Nav(
                 [
-                    dbc.NavItem(
-                        dbc.NavLink(
-                            html.Div([
-                                html.I(className="fas fa-home me-1"),
-                                "Home"
-                            ], style={"display": "flex", "alignItems": "center"}),
-                            href="/",
-                            className="nav-link"
-                        )
-                    ),
-                    dbc.NavItem(
-                        dbc.NavLink(
-                            html.Div([
-                                html.I(className="fas fa-info-circle me-1"),
-                                "About"
-                            ], style={"display": "flex", "alignItems": "center"}),
-                            href="/about",
-                            className="nav-link"
-                        )
-                    ),
+                    # dbc.NavItem(
+                    #     dbc.NavLink(
+                    #         html.Div([
+                    #             html.I(className="fas fa-home me-1"),
+                    #             "Home"
+                    #         ], style={"display": "flex", "alignItems": "center"}),
+                    #         href="/",
+                    #         className="nav-link"
+                    #     )
+                    # ),
+                    # dbc.NavItem(
+                    #     dbc.NavLink(
+                    #         html.Div([
+                    #             html.I(className="fas fa-info-circle me-1"),
+                    #             "About"
+                    #         ], style={"display": "flex", "alignItems": "center"}),
+                    #         href="/about",
+                    #         className="nav-link"
+                    #     )
+                    # ),
                     dbc.NavItem(
                         dbc.NavLink(
                             html.Div([
                                 html.I(className="fas fa-broadcast-tower me-1"),
                                 html.Span("Providers", style={"fontWeight": "bold"}),
                             ], style={"display": "flex", "alignItems": "center"}),
-                            href="/providers",
+                            href="/",
                             className="nav-link active"
                         )
                     ),

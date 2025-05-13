@@ -8,6 +8,41 @@ import os
 # Register the page
 dash.register_page(__name__, path="/category", name="Category Status")
 
+
+excel_path = os.path.join(os.path.dirname(__file__), '../data/dummy_data/Mesonet Vendor Info.xlsx')
+xl = pd.ExcelFile(excel_path)
+
+# Try to find the correct sheet name
+sheet_name = 'Sheet 1'  # Use the specific dashboard metadata sheet
+if sheet_name not in xl.sheet_names:
+    sheet_name = next((s for s in xl.sheet_names if 'vendor' in s.lower()), None)
+    if sheet_name is None:
+        sheet_name = xl.sheet_names[0]  # Use the first sheet if no matching sheet found
+print(f"Using sheet: {sheet_name}")
+
+vendor_df = pd.read_excel(excel_path, sheet_name=sheet_name)
+# print("Available columns:", vendor_df.columns.tolist())
+
+# exit()
+# Convert provider data to list of dictionaries
+providers = []
+for _, row in vendor_df.iterrows():
+    try:
+        provider = {
+            "name": str(row.get('Unnamed: 1', 'Unknown')),                  # Vendor/Provider Name
+            "color": str(row.get('Color', '#1f77b4')),                      # Default color (not present in your columns, fallback assumed)
+            "lat": float(row.get('Unnamed: 5', 0)),                         # Latitude
+            "lon": float(row.get('Unnamed: 6', 0)),                         # Longitude
+            "frequency": float(row.get('Unnamed: 4', 0)),                  # Frequency (not mapped in your columns, fallback assumed)
+            "status": str(row.get('Status', 'Active')),                    # Status (not mapped in your columns, fallback assumed)
+            "station_count": int(row.get('Total Station Count', 0))         
+        }
+        providers.append(provider)
+    except Exception as e:
+        # print(f"Error processing row: {row}")
+        # print(f"Error: {e}")
+        pass
+
 # Sync with providers color scheme
 status_colors = {
     "high": "#6cc26c",  # green
@@ -235,20 +270,56 @@ map_fig.update_layout(
     autosize=True,
     height=None,
 )
-for cat in categories:
+
+
+
+for provider in providers:
+    station_count = provider['station_count']
+    if station_count >= 100:
+        status = "high"
+    elif station_count >= 50:
+        status = "medium"
+    else:
+        status = "low"
+        
+    marker_color = status_colors[status]
+        
     map_fig.add_trace(go.Scattermapbox(
-        lat=[cat["lat"]],
-        lon=[cat["lon"]],
-        mode="markers",
+        lat=[provider["lat"]],
+        lon=[provider["lon"]],
+        mode='markers+text',
         marker=go.scattermapbox.Marker(
-            size=25,
-            color=cat["color"],
-            opacity=0.9
+            size=35,
+            color=marker_color,
+            opacity=0.8,
+            # symbol='marker'  # This creates a pin-like marker
         ),
-        text=[cat["name"]],
-        hovertext=[f"{cat['name']}<br>Expected: {cat['expected']}<br>Actual: {cat['actual']}<br>Percent: {cat['percent']:.2f}%"],
-        hoverinfo="text"
+        text=[f"{station_count}"],
+        textposition="middle center",
+        textfont=dict(
+            size=12,
+            color='black'
+        ),
+        name=provider["name"],
+        showlegend=True,
+        hovertext=[f"{provider['name']}<br>Status: {provider['status']}<br>Expected Record Counts/HR: {provider['frequency']}/h<br>Stations: {station_count}"],
+        hoverinfo='text'
     ))
+    
+# for cat in categories:
+#     map_fig.add_trace(go.Scattermapbox(
+#         lat=[cat["lat"]],
+#         lon=[cat["lon"]],
+#         mode="markers",
+#         marker=go.scattermapbox.Marker(
+#             size=25,
+#             color=cat["color"],
+#             opacity=0.9
+#         ),
+#         text=[cat["name"]],
+#         hovertext=[f"{cat['name']}<br>Expected: {cat['expected']}<br>Actual: {cat['actual']}<br>Percent: {cat['percent']:.2f}%"],
+#         hoverinfo="text"
+#     ))
 
 map_div = html.Div([
     dcc.Graph(
